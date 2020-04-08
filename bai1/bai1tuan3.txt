@@ -1,0 +1,96 @@
+import random
+import time
+
+
+# generate data
+def generate_dateset():
+    A = []
+    while len(A) < 10**6:
+        A.append(random.randint(0, 10**6))
+    return A
+
+
+# generate_key
+def generate_key():
+    key = []
+    while len(key) < 10:
+        temp = random.randint(0, 10**6)
+        if temp not in key:
+            key.append(temp)
+    return key
+
+
+# Search
+def Search(A, x):
+    i=0
+    while(i<len(A)):
+        if(A[i]==x):
+            return i
+        else:
+            i+=1
+    return -1
+
+
+# OptSearch
+def OptSearch(A, x):
+    A.append(x)
+    i=0
+    while A[i]!=x:
+        i+=1
+    if(i<len(A)-1):
+        return i
+    else:
+        return -1
+
+
+
+# Now, we start to compare
+def compare(A, key):
+    result = []
+    for i in range(len(key)):
+        AnswerEachKey = []
+        # Search
+        start_Search = time.time()
+        ans_Search = Search(A, key[i])
+        end_Search = time.time()
+        # optSearch
+        start_optSearch = time.time()
+        ans_optSearch = OptSearch(A, key[i])
+        end_optSearch = time.time()
+
+        # AnswerEachKey = [time_Search, time_optSearch, index]
+        if ans_Search != ans_optSearch:
+            AnswerEachKey.append('Your function is Error, go to the hell!')
+        else:
+            AnswerEachKey.append(end_Search-start_Search)
+            AnswerEachKey.append(end_optSearch-start_optSearch)
+            AnswerEachKey.append(ans_Search)
+        # finally save in result
+        result.append(AnswerEachKey)
+
+    return result
+
+# print the comparison table
+
+
+def print_comparision_table(result, key):
+    longest_key = max([len(str(i)) for i in key])
+    longest_time_search = max([len(str(result[i][0])) for i in range(len(result))])
+    longest_time_optsearch = max([len(str(result[i][1])) for i in range(len(result))])
+    longest_index = max([len(str(result[i][2])) for i in range(len(result))])
+
+    print('Comparision Table')
+    print('{:^{width}}'.format('key', width = longest_key), '{:^{width}}'.format('Search', width = longest_time_search), '{:^{width}}'.format('OptSearch', width = longest_time_optsearch),
+          '{:^{width}}'.format('Index', width = longest_index))
+
+    for i in range(len(result)):
+        print('{:^{width}}'.format(key[i], width = longest_key), '{:^{width}}'.format(result[i][0], width = longest_time_search), '{:^{width}}'.format(result[i][1], width = longest_time_optsearch),
+              '{:^{width}}'.format(result[i][2], width = longest_index))
+
+
+# main
+if __name__ == '__main__':
+    A = generate_dateset()
+    key = generate_key()
+    result = compare(A, key)
+    print_comparision_table(result, key)
